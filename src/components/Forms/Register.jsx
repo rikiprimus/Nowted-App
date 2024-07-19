@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { register } from "../../services/api/apiAuth";
 import google from "../../assets/google.png";
 import facebook from "../../assets/facebook.png";
@@ -8,14 +8,18 @@ import Alert from "../Alert";
 import ButtonSubmit from "../ButtonSubmit";
 
 const Register = ({ onFormChange }) => {
+  // Custom hooks for handling loading state and messages
   const { message, type, showMessage } = useMessage();
   const [loading, withLoading] = useLoading();
+  
+  // State to manage user registration credentials
   const [credentials, setCredentials] = useState({
     name: "",
     email: "",
     password: "",
   });
 
+  // Handle changes in input fields
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCredentials((prevState) => ({
@@ -24,6 +28,7 @@ const Register = ({ onFormChange }) => {
     }));
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     withLoading(async () => {
@@ -39,9 +44,13 @@ const Register = ({ onFormChange }) => {
 
   return (
     <div className="w-full flex flex-col gap-4 items-center">
+      {/* Display alert messages */}
       <Alert message={message} status={type} />
+      
+      {/* Registration Form */}
       <form onSubmit={handleSubmit} className="w-full space-y-4">
         <p className="w-full font-bold text-2xl text-center">Sign-Up</p>
+        
         <div className="space-y-2">
           <label htmlFor="name">Name</label>
           <input
@@ -51,11 +60,12 @@ const Register = ({ onFormChange }) => {
             value={credentials.name}
             onChange={handleChange}
             required
-            autoComplete="current-name"
+            autoComplete="name"
             placeholder="Enter your name"
             className="w-full border-2 border-purple rounded-md outline-none p-2 focus:outline-2 focus:outline-[#818cf8]"
           />
         </div>
+        
         <div className="space-y-2">
           <label htmlFor="email">Email</label>
           <input
@@ -65,11 +75,12 @@ const Register = ({ onFormChange }) => {
             value={credentials.email}
             onChange={handleChange}
             required
-            autoComplete="current-email"
+            autoComplete="email"
             placeholder="Enter your email"
             className="w-full border-2 border-purple rounded-md outline-none p-2 focus:outline-2 focus:outline-[#818cf8]"
           />
         </div>
+        
         <div className="space-y-2">
           <label htmlFor="password">Password</label>
           <input
@@ -79,11 +90,12 @@ const Register = ({ onFormChange }) => {
             value={credentials.password}
             onChange={handleChange}
             required
-            autoComplete="current-password"
+            autoComplete="new-password"
             placeholder="Enter your password"
             className="w-full border-2 border-purple rounded-md outline-none p-2 focus:outline-2 focus:outline-[#818cf8]"
           />
         </div>
+        
         <div className="flex justify-between">
           <button
             type="button"
@@ -100,16 +112,20 @@ const Register = ({ onFormChange }) => {
             Already have an account?
           </button>
         </div>
+        
+        {/* Submit button with loading state */}
         <ButtonSubmit loading={loading}>Register</ButtonSubmit>
       </form>
+      
+      {/* Social media registration options */}
       <div className="space-y-4 pb-14">
         <p className="w-full font-semibold text-center">Register with others:</p>
         <button className="w-[250px] flex items-center justify-center gap-4 border border-purple border-opacity-40 p-2 rounded-full hover:bg-purple hover:text-white active:bg-opacity-40">
-          <img src={google} alt="logo" className="w-6" />
+          <img src={google} alt="Google logo" className="w-6" />
           <p>Register with Google</p>
         </button>
         <button className="w-[250px] flex items-center justify-center gap-4 border border-purple border-opacity-40 p-2 rounded-full hover:bg-purple hover:text-white active:bg-opacity-40">
-          <img src={facebook} alt="logo" className="w-6" />
+          <img src={facebook} alt="Facebook logo" className="w-6" />
           <p>Register with Facebook</p>
         </button>
       </div>

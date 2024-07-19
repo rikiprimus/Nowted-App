@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/api/apiAuth";
 import google from "../../assets/google.png";
@@ -9,14 +9,18 @@ import ButtonSubmit from "../ButtonSubmit";
 import Alert from "../Alert";
 
 const Login = ({ onFormChange }) => {
+  // Custom hooks for handling loading state and messages
   const { message, type, showMessage } = useMessage();
   const [loading, withLoading] = useLoading();
   const navigate = useNavigate();
+  
+  // State to manage user credentials
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
 
+  // Handle changes in input fields
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCredentials((prevState) => ({
@@ -25,21 +29,25 @@ const Login = ({ onFormChange }) => {
     }));
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     withLoading(async () => {
       try {
         await login(credentials);
-        navigate("/home");
+        navigate("/home"); // Redirect to home page on successful login
       } catch (error) {
-        showMessage(error.message, "error");
+        showMessage(error.message, "error"); // Show error message if login fails
       }
     });
   };
 
   return (
     <div className="w-full flex flex-col gap-4 items-center">
+      {/* Display alert messages */}
       <Alert message={message} status={type} />
+      
+      {/* Login Form */}
       <form onSubmit={handleSubmit} className="w-full space-y-4">
         <p className="w-full font-bold text-2xl text-center">Sign-In</p>
         <div className="space-y-2">
@@ -71,6 +79,7 @@ const Login = ({ onFormChange }) => {
           />
         </div>
         <div className="flex justify-between">
+          {/* Links to other forms */}
           <button
             type="button"
             onClick={() => onFormChange("forgotpassword")}
@@ -86,8 +95,11 @@ const Login = ({ onFormChange }) => {
             Sign-up !
           </button>
         </div>
+        {/* Submit button with loading state */}
         <ButtonSubmit loading={loading}>Login</ButtonSubmit>
       </form>
+      
+      {/* Social login options */}
       <div className="space-y-4 pb-14">
         <p className="font-semibold text-center">Login with others:</p>
         <button className="w-[250px] flex items-center justify-center gap-4 border border-purple border-opacity-40 p-2 rounded-full hover:bg-purple hover:text-white active:bg-opacity-40">

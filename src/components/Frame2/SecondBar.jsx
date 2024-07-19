@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useResizeBar from "../../hooks/useResizeBar";
 import HtmlToString from "../../utils/HtmlToString";
-import { FiTrash } from "react-icons/fi";
-import { BsThreeDots } from "react-icons/bs";
 import { format } from "date-fns";
 import { useApp } from "../../hooks/useApp";
 
 const SecondBar = ({ type }) => {
+  // Custom hook for handling the resize functionality of the sidebar
   const { width, isResized } = useResizeBar(260, 500, 350);
-  const { noteId, dataMore, openMore, notes, handleMenu, openMenuFolder, toggleEntity, openMoreNote } =
-    useApp();
+
+  // Extracting relevant data and functions from the useApp hook
+  const { noteId, dataMore, toggleEntity } = useApp();
+
+  // State for the title based on the type prop
   const [title, setTitle] = useState("");
 
+  // Effect to update the title based on the type prop
   useEffect(() => {
     if (type === 0) {
       setTitle("Favorite");
@@ -24,20 +27,24 @@ const SecondBar = ({ type }) => {
 
   return (
     <div className="flex">
+      {/* Sidebar */}
       <div
         style={{ width: `${width / 18}rem` }}
         className="bg-light-1 dark:bg-dark-1 space-y-6 pt-3 px-3 desktop:space-y-3 desktop:pt-9 desktop:px-5"
       >
         <div className="w-full flex flex-col gap-5">
+          {/* Title Header */}
           <div className="relative flex items-center justify-between">
             <h1 className="text-2xl text-dark-1 dark:text-white text-center py-2">
               {title}
             </h1>
           </div>
+
+          {/* Content List */}
           <div className="w-full h-[680px] desktop:h-[808px] flex flex-col gap-5 overflow-y-auto custom-scrollbar">
             {dataMore?.length === 0 ? (
               <p className="text-center text-gray-500">
-                Tidak ada Data di {title}
+                No data in {title}
               </p>
             ) : (
               dataMore?.map((item, index) => (
@@ -50,7 +57,7 @@ const SecondBar = ({ type }) => {
                       : null
                   }`}
                 >
-                  <p className="font-semibold text-lg text-dark-1 dark:text-white">
+                  <p className="font-semibold text-lg text-dark-1 dark:text-white overflow-hidden text-ellipsis whitespace-nowrap">
                     {item?.title}
                   </p>
                   <div className="w-full flex gap-3">
@@ -68,7 +75,7 @@ const SecondBar = ({ type }) => {
         </div>
       </div>
 
-      {/* Handle grip */}
+      {/* Resize Grip */}
       <div
         className="w-1 bg-dark-3 cursor-col-resize hover:bg-dark-10 active:bg-dark-3"
         onMouseDown={() => {

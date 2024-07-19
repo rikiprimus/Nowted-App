@@ -1,88 +1,72 @@
 
+/* import font Source Sans 3 */
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 
+/* import tailwind */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
-/* CSS Text Editor Quill */
-/* .ql-container.ql-snow {
-  @apply border-0
+/* custom CSS toolbar Editor */
+.rdw-editor-toolbar {
+  @apply bg-light-background dark:bg-dark-background border-0 border-t-[2px] border-b-[2px] border-light-10 dark:border-dark-10 
 }
 
-.ql-toolbar.ql-snow {
-  @apply border-l-0 border-r-0 border-t-2 border-b-2 border-light-10 dark:border-dark-10;
-  @apply text-white;
+/* custom dropdown toolbar */
+.rdw-dropdown-wrapper {
+  @apply min-w-[70px] min-h-[30px] bg-light-background dark:bg-dark-background border-0 hover:dark:bg-dark-background hover:bg-light-background
+}
+.rdw-dropdown-wrapper .rdw-dropdown-optionwrapper {
+  @apply bg-white dark:bg-dark-10 
+}
+.rdw-dropdown-option-active {
+  @apply bg-dark-20
 }
 
-.ql-editor {
-  @apply h-[600px] text-[16px] text-dark-1 dark:text-light-1;
-} */
+/* custom icon dropdown */
+.rdw-dropdown-carettoopen {
+  @apply border-t-light-1
+}
+.rdw-dropdown-carettoclose {
+  @apply border-b-light-1
+}
+/* custom hover & seleceted option */
+.rdw-dropdownoption-highlighted {
+  @apply bg-purple bg-opacity-50 dark:bg-opacity-70
+}
+.rdw-dropdownoption-active {
+  @apply bg-purple bg-opacity-50 dark:bg-opacity-70
+}
+/* custom scrollbar optionwrapper */
+.rdw-dropdown-optionwrapper::-webkit-scrollbar {
+  @apply w-[4px]
+}
+.rdw-dropdown-optionwrapper::-webkit-scrollbar-thumb {
+  @apply bg-dark-40 rounded-full hover:w-[5px]
+}
+.rdw-dropdown-optionwrapper::-webkit-scrollbar-thumb:hover {
+  @apply bg-dark-10
+}
 
-/* CSS Scrollbar Folderbar Custom */
+/* Mengatur ukuran kotak inline */
+.rdw-option-wrapper {
+  @apply bg-light-background dark:bg-dark-background w-[30px] h-[30px] flex items-center justify-center border-0
+}
+.rdw-link-modal {
+  @apply w-[250px] h-[250px] text-dark-1 rounded-lg
+  
+}
 
-/* .custom-scrollbar::-webkit-scrollbar {
-  @apply w-[2px] 
+/* custom CSS Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  @apply w-[2px]
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-dark-40 rounded-full
+  @apply bg-dark-40 rounded-full hover:w-[5px]
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   @apply bg-dark-10
-} */
-/* 
-.app-container {
-  min-height: 100vh;
-  padding: 1em 1em;
-  display: flex;
-  flex-direction: row;
-  height: 100vh;
 }
-
-.app-sidebar {
-  flex-grow: 0;
-  flex-shrink: 0;
-  min-width: 150px;
-  max-width: 300px;
-  display: flex;
-  border-right: #e9e9e9 1px solid;
-  flex-direction: row;
-  background: #ffffff;
-  box-shadow: -8px 2px 22px -7px rgba(0, 0, 0, 0.25);
-  border-radius: 10px 0px 0px 10px;
-  z-index: 2;
-}
-
-.app-frame {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: white;
-  height: 100vh;
-  max-height: 100%;
-  background: #ffffff;
-  box-shadow: 8px 2px 32px -2px rgba(0, 0, 0, 0.25);
-  border-radius: 0px 10px 10px 0px;
-  z-index: 1;
-}
-
-.app-sidebar .app-sidebar-content {
-  flex: 1;
-}
-
-.app-sidebar .app-sidebar-resizer {
-  flex-grow: 0;
-  flex-shrink: 0;
-  flex-basis: 6px;
-  justify-self: flex-end;
-  cursor: col-resize;
-  resize: horizontal;
-}
-
-.app-sidebar .app-sidebar-resizer:hover {
-  width: 3px;
-  background: #c1c3c5b4;
-} */

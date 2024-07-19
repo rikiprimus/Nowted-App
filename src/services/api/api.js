@@ -13,7 +13,6 @@ export async function fetchAll(url) {
 
 // Function to fetch data by ID or other parameter
 export async function fetchBySomething(url, params) {
-  // console.log(url, params);
   try {
     const response = await instance.get(`${url}/${params}`);
     return response.data; // Return data from response
@@ -59,7 +58,5 @@ export function getCookie(name) {
   if (cookieData) {
     const responseData = JSON.parse(cookieData);
     return responseData; // Return parsed cookie data if exists
-  } else {
-    console.log('No data found in cookie'); // Log message if no data found
   }
 }

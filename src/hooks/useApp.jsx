@@ -1,7 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import Cookies from "js-cookie";
+import { createContext, useContext, useState, useEffect } from "react";
 import {
-  fetchAll,
   fetchBySomething,
   create,
   update,
@@ -12,55 +10,59 @@ import {
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+  // State management for user, folders, notes, and UI controls
   const [userId, setUserId] = useState(null);
-
   const [folderId, setFolderId] = useState(null);
   const [folders, setFolders] = useState([]);
   const [editIndexFolder, setEditIndexFolder] = useState(null);
   const [editedNameFolder, setEditedNameFolder] = useState("");
-
+  const [noteId, setNoteId] = useState(null);
   const [note, setNote] = useState(null);
   const [notes, setNotes] = useState([]);
-  const [noteId, setNoteId] = useState(null);
   const [recentNotes, setRecentNotes] = useState([]);
-
   const [openMore, setOpenMore] = useState(null);
   const [dataMore, setDataMore] = useState([]);
-  const [openMoreNote, setOpenMoreNote] = useState(false);
   const [filter, setFilter] = useState(null);
-
   const [openMenuFolder, setOpenMenuFolder] = useState(false);
   const [openMenuNote, setOpenMenuNote] = useState(false);
+  const [error, setError] = useState({ message: null, functionName: null });
 
-  // mendapatkan data User id dari cookie
+  useEffect(() => {
+    if (error.message) {
+      console.error(`Error in ${error.functionName}: ${error.message}`);
+    }
+  }, [error]);
+
+  // Getting User ID from cookie
   useEffect(() => {
     const dataUser = getCookie("user");
     setUserId(dataUser?._id);
   }, []);
 
-  // mendapatkan data Recent Note yang pernah di buka
+  // Fetching recent notes that were opened
   const fetchRecentNotes = async () => {
     try {
       const response = await fetchBySomething("/user/recent", `${userId}`);
       setRecentNotes(response);
     } catch (error) {
-      console.error("Error fetching recent notes:", error);
+      setError({ message: error, functionName: 'fetchRecentNotes' });
     }
   };
 
+  // Fetching notes by ID
   const fetchNotesById = async () => {
     if (noteId) {
       try {
         const response = await fetchBySomething("/note", `${noteId}/${userId}`);
-        setNote(response?.data)
+        setNote(response?.data);
         fetchRecentNotes();
       } catch (error) {
-        console.error("Error fetching notes:", error);
+        setError({ message: error, functionName: 'fetchNotesById' });
       }
     }
   };
 
-  // melakukan pemanggilan fungsi fetch recent berdasarkan perubahan userId dan noteId
+  // Calling fetch functions based on userId and noteId changes
   useEffect(() => {
     if (userId) {
       fetchNotesById();
@@ -68,22 +70,24 @@ export const AppProvider = ({ children }) => {
     }
   }, [userId, noteId]);
 
-  // mendapatkan semua data folder
+  // Fetching all folders
   const fetchFolders = async () => {
     try {
-      const response = await fetchAll("/folder");
-      setFolders(response);
+      const response = await fetchBySomething("/folder/user", userId);
+      setFolders(response?.data);
     } catch (error) {
-      console.error("Error fetching folders:", error);
+      setError({ message: error, functionName: 'fetchFolders' });
     }
   };
 
-  // melakukan pemanggilan fungsi fetch recent berdasarkan perubahan userId & Tambahkan juga melakukan fetch folder setiap melakukan create !!!
+  // Calling fetch folders based on userId changes
   useEffect(() => {
-    fetchFolders();
+    if (userId) {
+      fetchFolders();
+    }
   }, [userId]);
 
-  // mendapatkan semua data notes berdasarkan folder yang dipilih
+  // Fetching all notes based on selected folder
   const fetchNotesByFolder = async () => {
     try {
       const response = await fetchBySomething(
@@ -92,11 +96,11 @@ export const AppProvider = ({ children }) => {
       );
       setNotes(response?.data);
     } catch (error) {
-      console.error("Error fetching notes:", error);
+      setError({ message: error, functionName: 'fetchNotesByFolder' });
     }
   };
 
-  // memanggil fungsi note by folder bila folderId ada
+  // Calling fetch notes by folder if folderId exists
   useEffect(() => {
     setNotes([]);
     if (folderId) {
@@ -104,9 +108,9 @@ export const AppProvider = ({ children }) => {
     }
   }, [folderId]);
 
-  // memanggil fungsi note by filter
+  // Fetching notes by filter
   const fetchNotesByFilter = async () => {
-    setDataMore([])
+    setDataMore([]);
     try {
       const response = await fetchBySomething(
         "/note",
@@ -114,11 +118,11 @@ export const AppProvider = ({ children }) => {
       );
       setDataMore(response?.data);
     } catch (error) {
-      console.error("Error fetching notes by filter:", error);
+      setError({ message: error, functionName: 'fetchNotesByFilter' });
     }
   };
 
-  // memberikan nilai filter berdasarkan index openMore lalu memanggil fungsi notes by filter
+  // Setting filter based on openMore index and calling fetch notes by filter
   useEffect(() => {
     let filter = null;
 
@@ -141,47 +145,50 @@ export const AppProvider = ({ children }) => {
   }, [openMore]);
 
   useEffect(() => {
-    if(filter) {
+    if (filter) {
       fetchNotesByFilter();
     }
-  }, [filter])
+  }, [filter]);
 
-  // fungsi untuk membuat sebuah data berdasarkan type note atau folder
+  // Function to create an entity (note or folder)
   const createEntity = async (type) => {
     try {
       if (type === "note") {
         const response = await create("/note/create", { user_id: userId });
         setNoteId(response?.data?._id);
       } else if (type === "folder") {
-        await create("/folder/create");
+        await create("/folder/create", { user_id: userId });
         fetchFolders();
       }
-      console.log(`berhasil membuat ${type}`);
     } catch (error) {
-      console.error(`Error creating ${type}:`, error);
+      setError({ message: error, functionName: 'createEntity' });
     }
   };
 
+  // Function to update a folder
   const updateFolder = async () => {
     try {
       await update("/folder", folderId, { name: editedNameFolder });
       fetchFolders();
     } catch (error) {
-      console.error(`Error updating folder :`, error);
+      setError({ message: error, functionName: 'updateFolder' });
     }
-
     setEditIndexFolder(null);
   };
 
-  const updateNote = async (id, data) => {
+  // Function to update a note
+  const updateNote = async (noteId, data) => {
     try {
-      await update("/note", id, data);
+      await update("/note", noteId, data);
       fetchRecentNotes();
+      fetchNotesByFolder();
     } catch (error) {
-      console.error(`Error updating note:`, error);
+      setError({ message: error, functionName: 'updateNote' });
     }
+    setOpenMenuNote(false);
   };
 
+  // Function to delete a folder
   const DeleteFolder = async () => {
     try {
       await deleted(`/folder`, folderId);
@@ -189,44 +196,42 @@ export const AppProvider = ({ children }) => {
       setOpenMenuFolder(false);
       fetchFolders();
     } catch (error) {
-      console.error("Error delete Folder:", error);
+      setError({ message: error, functionName: 'DeleteFolder' });
     }
   };
 
-  // ========================================================================
-  // Fetch by Filter, Restore & Delete Note function
-  // ========================================================================
-
+  // Function to restore a note
   const RestoreNote = async (item, data) => {
     try {
       await update("/note", noteId, { [item]: data });
       setDataMore([]);
       fetchNotesByFilter();
     } catch (error) {
-      console.error("Error restore Note:", error);
+      setError({ message: error, functionName: 'RestoreNote' });
     }
   };
 
+  // Function to delete a note
   const DeleteNote = async () => {
     try {
       await deleted(`/note`, noteId);
+      setNoteId(null);
       setDataMore([]);
       fetchNotesByFilter();
     } catch (error) {
-      console.error("Error delete Note:", error);
+      setError({ message: error, functionName: 'DeleteNote' });
     }
   };
 
-  // ========================================================================
-  // handle / toggle function
-  // ========================================================================
-
+  // Handle folder input change
   const handleInputChangeFolder = (e) => {
     setEditedNameFolder(e.target.value);
   };
 
+  // Toggle entity selection
   const toggleEntity = (type, id) => {
-    // setOpenMore(null);
+    setOpenMenuFolder(false);
+    setOpenMenuNote(false);
     if (type === "folder") {
       setFolderId(folderId === id ? null : id);
     } else if (type === "note") {
@@ -238,11 +243,13 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  // Handle double click on folder to edit
   const handleDoubleClick = (index) => {
     setEditIndexFolder(index);
     setEditedNameFolder(folders[index].name);
   };
 
+  // Handle menu toggling for folder and note
   const handleMenu = (type) => {
     if (type === "folder") {
       setOpenMenuFolder(!openMenuFolder);
@@ -263,7 +270,7 @@ export const AppProvider = ({ children }) => {
         openMore,
         setOpenMore,
 
-        //state
+        // state
         recentNotes,
         folders,
         note,
@@ -275,7 +282,6 @@ export const AppProvider = ({ children }) => {
         openMenuFolder,
         openMenuNote,
         filter,
-        openMoreNote,
 
         // function
         createEntity,

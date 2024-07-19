@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
 import backgroundlayer from "../assets/backgroundlayer.png";
 import logodark from "../assets/logodark.svg";
 import Login from "../components/Forms/Login";

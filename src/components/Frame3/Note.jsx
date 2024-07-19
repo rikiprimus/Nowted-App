@@ -1,56 +1,45 @@
-// masih error
-
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   FaRegFolder,
-  FaRegFolderOpen,
   FaRegStar,
   FaStar,
 } from "react-icons/fa";
 import { LuArchive, LuCalendarDays } from "react-icons/lu";
 import { FiTrash } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
-// import TextEditor from "../TextEditor";
 import Datepicker from "../Datepicker";
-import _ from "lodash";
 import { useApp } from "../../hooks/useApp";
+import TextEditor from "../TextEditor";
 
 const Note = () => {
   const today = new Date();
   const {
     note,
-    setNote,
-    folderId,
     noteId,
-    setFolderId,
     setNoteId,
     folders,
-    notes,
     openMenuNote,
-    setOpenMenuNote,
     handleMenu,
     updateNote,
+    toggleEntity,
   } = useApp();
   
-
-  // state array untuk menyimpan credentials data note. Digunakan untuk menyimpan data dan mengirim data
+  // State array to store note credentials data. Used to store and send data.
   const [credentials, setCredentials] = useState({
     folder_id: "",
     title: "",
-    content: "",
     date: today,
     favorite: false,
     trash: false,
     archived: false,
   });
 
-  // melakukan update credential setiap note berubah
+  // Update credentials every time the note changes.
   useEffect(() => {
     if (note) {
       setCredentials({
         folder_id: note?.folder_id || "",
         title: note?.title || "",
-        content: note?.content || "",
         date: note?.date || today,
         favorite: note?.favorite || false,
         trash: note?.trash || false,
@@ -59,36 +48,25 @@ const Note = () => {
     }
   }, [note]);
 
-  // mengeluarkan note bila pindah folder
+  // Clear the note when switching folders.
   useEffect(() => {
     setNoteId(null);
   }, [folders]);
 
-  // melakukan perubahan update note 
+  // Handle updates to the note.
   const handleChange = (key, value) => {
     setCredentials((prevCredentials) => ({
       ...prevCredentials,
       [key]: value,
     }));
-    if(key !== 'title'){
-      updateNote(noteId, {[key]: value})
+    if (key !== "title") {
+      updateNote(noteId, { [key]: value });
     }
   };
 
-  // melakukan perubahan bila klik luar object
+  // Handle blur events to update the note.
   const handleBlur = (key, value) => {
-    updateNote(noteId, {[key]: value});
-  };
-
-  const debouncedOnChange = useRef(
-    _.debounce((content, noteId) => {
-      handleUpdateNote("content", content, noteId);
-    }, 300)
-  ).current;
-
-  const handleContentChange = (value) => {
-    handleChange("content", value);
-    debouncedOnChange(value, noteId);
+    updateNote(noteId, { [key]: value });
   };
 
   return (
@@ -117,7 +95,7 @@ const Note = () => {
               onBlur={(e) => handleBlur("title", e.target.value)}
             />
             <button
-              onClick={() => handleMenu('note')}
+              onClick={() => handleMenu("note")}
               className="border-2 rounded-full p-1 text-light-40 dark:text-dark-40 hover:text-light-60 hover:dark:text-dark-60 active:opacity-40"
             >
               <BsThreeDots size={25} />
@@ -165,7 +143,7 @@ const Note = () => {
                 <p>Date</p>
                 <Datepicker
                   date={credentials?.date}
-                  onDateChange={(date) => handleChange('date', date)}
+                  onDateChange={(date) => handleChange("date", date)}
                 />
               </div>
             </div>
@@ -178,7 +156,7 @@ const Note = () => {
                   value={credentials?.folder_id}
                   onChange={(e) => {
                     handleChange("folder_id", e.target.value);
-                    setFolderId(e.target.value);
+                    toggleEntity("folder", e.target.value);
                   }}
                   className="w-full bg-light-background dark:bg-dark-background text-dark-1 dark:text-white font-bold underline px-1 outline-none border-blue-500"
                 >
@@ -193,12 +171,9 @@ const Note = () => {
             </div>
           </div>
           {/* Text Editor */}
-          {/* <div>
-            <TextEditor
-              content={credentials.content}
-              onContentChange={handleContentChange}
-            />
-          </div> */}
+          <div>
+            <TextEditor />
+          </div>
         </div>
       )}
     </div>

@@ -73,6 +73,7 @@ export function logout() {
 
   if (token) {
     Cookies.remove('token', { path: '' });
+    window.location.reload();
     return 'Token removed successfully';
   } else {
     return 'Token not found';

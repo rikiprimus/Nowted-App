@@ -1,5 +1,4 @@
-import React from "react";
-import useResizeBar from "../../hooks/useResizeBar"
+import useResizeBar from "../../hooks/useResizeBar";
 import HtmlToString from "../../utils/HtmlToString";
 import { FiTrash } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
@@ -7,18 +6,22 @@ import { format } from "date-fns";
 import { useApp } from "../../hooks/useApp";
 
 const FolderBar = () => {
+  // Custom hook for handling the resize functionality of the folder bar
   const { width, isResized } = useResizeBar(260, 500, 350);
+
+  // Extracting relevant data and functions from the useApp hook
   const { folderId, noteId, folders, notes, handleMenu, toggleEntity, DeleteFolder, openMenuFolder } = useApp();
 
   return (
     <div className="flex">
-      <div style={{ width: `${width / 18}rem` }} className="bg-light-1 dark:bg-dark-1 space-y-6 pt-3 px-3 desktop:space-y-3 desktop:pt-9 desktop:px-5">
+      {/* Folder Bar */}
+      <div style={{ width: `${width / 18}rem` }} className="bg-light-1 dark:bg-dark-1 space-y-6 pt-3 desktop:space-y-3 desktop:pt-9">
         <div className="w-full flex flex-col gap-5">
-          <div className="relative flex items-center justify-between">
+          {/* Folder Header */}
+          <div className="relative flex items-center justify-between px-3 desktop:px-5">
             <h1 className="text-xl desktop:text-2xl text-dark-1 dark:text-white text-center py-2">
               {folderId
-                ? folders.find((folder) => folder?._id === folderId)?.name ||
-                  "Folder not found"
+                ? folders.find((folder) => folder?._id === folderId)?.name || "Folder not found"
                 : "No folder selected"}
             </h1>
             <button className="p-2" onClick={() => handleMenu('folder')}>
@@ -36,10 +39,11 @@ const FolderBar = () => {
               </div>
             ) : null}
           </div>
-          <div className="w-full h-[680px] desktop:h-[808px] flex flex-col gap-5 overflow-y-auto custom-scrollbar">
+          {/* Notes List */}
+          <div className="w-full h-[680px] desktop:h-[808px] flex flex-col gap-5 px-3 desktop:px-5 overflow-y-auto custom-scrollbar">
             {notes?.length === 0 ? (
               <p className="text-center text-gray-500">
-                Tidak ada note di folder
+                No notes in this folder
               </p>
             ) : (
               notes?.map((item, index) => (
@@ -52,7 +56,7 @@ const FolderBar = () => {
                       : null
                   }`}
                 >
-                  <p className="font-semibold text-lg text-dark-1 dark:text-white">
+                  <p className="font-semibold text-lg text-dark-1 dark:text-white overflow-hidden text-ellipsis whitespace-nowrap">
                     {item?.title}
                   </p>
                   <div className="w-full flex gap-3">
@@ -70,7 +74,7 @@ const FolderBar = () => {
         </div>
       </div>
 
-      {/* Handle grip */}
+      {/* Resize Grip */}
       <div
         className="w-1 bg-dark-3 cursor-col-resize hover:bg-dark-10 active:bg-dark-3"
         onMouseDown={() => {
@@ -81,4 +85,4 @@ const FolderBar = () => {
   );
 };
 
-export default FolderBar
+export default FolderBar;

@@ -1,4 +1,3 @@
-import React from "react";
 import SwitchButton from "../SwitchButton";
 import { useTheme } from "../../utils/ThemeContext";
 import logowhite from "../../assets/logowhite.svg";
@@ -15,26 +14,24 @@ import {
 import { CiEdit } from "react-icons/ci";
 import { FiTrash } from "react-icons/fi";
 import { LuArchive } from "react-icons/lu";
+import { MdLogout } from "react-icons/md";
 
 import { moreMenu } from "../../constants/lib";
 import { useApp } from "../../hooks/useApp";
+import { logout } from "../../services/api/apiAuth";
 
 const SideBar = () => {
   const { theme } = useTheme();
   const {
     noteId,
     folderId,
-
     recentNotes,
     folders,
-
     createEntity,
     updateFolder,
-
     toggleEntity,
     handleDoubleClick,
     handleInputChangeFolder,
-
     editIndexFolder,
     editedNameFolder,
     openMore,
@@ -60,7 +57,7 @@ const SideBar = () => {
       {/* new note */}
       <div className="w-full p-5">
         <button
-          onClick={() => createEntity("note")}
+          onClick={() => {createEntity("note"); toggleEntity('folder', folderId)}}
           className="w-full flex items-center justify-center gap-4 p-2 bg-light-10 dark:bg-dark-10 dark:text-white rounded-lg hover:bg-light-40 hover:dark:bg-dark-40 active:opacity-50"
         >
           <FaPlus size={20} />
@@ -88,7 +85,7 @@ const SideBar = () => {
               ) : (
                 <CgFileDocument size={20} />
               )}
-              <p className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[215px]">
+              <p className="overflow-hidden text-ellipsis whitespace-nowrap max-w-[215px] w-full h-[24px] text-start">
                 {item?.note_id.title}
               </p>
             </button>
@@ -107,7 +104,7 @@ const SideBar = () => {
           </button>
         </div>
         <div className="flex flex-col">
-          {folders.slice(0, 5).map((item, index) => (
+          {folders?.map((item, index) => (
             <button
               key={index}
               className={`flex flex-row items-center justify-start gap-5 py-2 px-5 hover:bg-purple hover:text-white active:bg-opacity-50 active:text-dark-40 ${
@@ -166,7 +163,15 @@ const SideBar = () => {
           ))}
         </div>
       </div>
+      {/* switch button to dark or light */}
       <SwitchButton />
+      {/* logout button */}
+      <div className="">
+        <button onClick={logout} className="flex items-center gap-4 font-semibold text-[#ff4040] text-lg py-1 px-3 desktop:px-5">
+          <MdLogout size={25} />
+          Logout
+        </button>
+      </div>
     </div>
   );
 };

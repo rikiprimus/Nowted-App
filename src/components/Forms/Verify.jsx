@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { verify } from '../../services/api/apiAuth';
 import Cookies from 'js-cookie';
 import useLoading from '../../hooks/useLoading';
@@ -7,13 +7,17 @@ import ButtonSubmit from "../ButtonSubmit";
 import Alert from '../Alert';
 
 const Verify = ({ onFormChange, mode }) => {
+  // Custom hooks for managing loading state and showing messages
   const { message, type, showMessage } = useMessage();
   const [loading, withLoading] = useLoading();
+  
+  // State to manage verification credentials (email and OTP)
   const [credentials, setCredentials] = useState({
     email: '',
     otp: '',
   });
 
+  // Fetch email from cookies on component mount
   useEffect(() => {
     const emailFromCookie = Cookies.get('email');
     if (emailFromCookie) {
@@ -24,6 +28,7 @@ const Verify = ({ onFormChange, mode }) => {
     }
   }, []);
 
+  // Handle changes in input fields
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCredentials((prevCredentials) => ({
@@ -32,6 +37,7 @@ const Verify = ({ onFormChange, mode }) => {
     }));
   };
 
+  // Handle form submission for OTP verification
   const handleSubmit = async (e) => {
     e.preventDefault();
     withLoading(async () => {
@@ -39,9 +45,9 @@ const Verify = ({ onFormChange, mode }) => {
         const result = await verify(credentials);
         showMessage(result.message, 'success');
         if (mode === 'register') {
-          onFormChange('login');
+          onFormChange('login'); // Redirect to login if registration mode
         } else if (mode === 'forgotpassword') {
-          onFormChange('newpassword');
+          onFormChange('newpassword'); // Redirect to new password if forgot password mode
         }
       } catch (error) {
         showMessage(error.message, 'error');
@@ -51,7 +57,10 @@ const Verify = ({ onFormChange, mode }) => {
 
   return (
     <div className="w-full flex flex-col gap-4 items-center">
+      {/* Display alert messages */}
       <Alert message={message} status={type} />
+      
+      {/* OTP Verification Form */}
       <form onSubmit={handleSubmit} className="w-full space-y-8">
         <p className="w-full font-bold text-2xl text-center">Verify OTP</p>
         <div className="space-y-2">
@@ -70,8 +79,12 @@ const Verify = ({ onFormChange, mode }) => {
             className="w-full border-2 border-purple rounded-md outline-none p-2 focus:outline-2 focus:outline-purple"
           />
         </div>
+        
+        {/* Submit button with loading state */}
         <ButtonSubmit loading={loading}>Check</ButtonSubmit>
       </form>
+      
+      {/* Link to return to login */}
       <button
         type="button"
         onClick={() => onFormChange('login')}
