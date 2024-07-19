@@ -35,8 +35,19 @@ export const AppProvider = ({ children }) => {
 
   // Getting User ID from cookie
   useEffect(() => {
-    const dataUser = getCookie("user");
-    setUserId(dataUser?._id);
+    const checkUserId = () => {
+      const dataUser = getCookie('user');
+      if (dataUser?._id) {
+        setUserId(dataUser._id);
+        clearInterval(intervalId); // Stop checking once userId is set
+      }
+    };
+
+    // Check every 500ms (adjust the interval as needed)
+    const intervalId = setInterval(checkUserId, 50);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   // Fetching recent notes that were opened

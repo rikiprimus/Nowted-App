@@ -1,5 +1,6 @@
 import instance from "./axios";
 import Cookies from 'js-cookie';
+import { decryptData } from "../../utils/cookieHelper";
 
 // Function to fetch all data
 export async function fetchAll(url) {
@@ -56,7 +57,6 @@ export function getCookie(name) {
   const cookieData = Cookies.get(name);
 
   if (cookieData) {
-    const responseData = JSON.parse(cookieData);
-    return responseData; // Return parsed cookie data if exists
+    return decryptData(cookieData);
   }
 }

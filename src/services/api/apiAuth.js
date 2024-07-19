@@ -1,5 +1,6 @@
 import instance from './axios';
 import Cookies from 'js-cookie';
+import { encryptData } from '../../utils/cookieHelper';
 
 // Function to log in
 export async function login(credentials) {
@@ -8,8 +9,8 @@ export async function login(credentials) {
     const { token } = response?.data;
 
     // Save token to cookies with 7 days expiry
-    Cookies.set('token', token, { expires: 7 });
-    Cookies.set('user', JSON.stringify(response?.data?.data), { expires: 7 });
+    Cookies.set('token', encryptData(token), { expires: 7 });
+    Cookies.set('user', encryptData(response?.data?.data), { expires: 7 });
 
     return response?.data?.data; // Return user data after successful login
   } catch (error) {
@@ -24,7 +25,7 @@ export async function register(credentials) {
     const { email } = credentials;
 
     // Save email to cookies with 7 days expiry
-    Cookies.set('email', email, { expires: 7 });
+    Cookies.set('email', encryptData(email), { expires: 7 });
 
     return response?.data; // Return server response after successful registration
   } catch (error) {
