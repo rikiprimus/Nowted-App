@@ -25,7 +25,7 @@ export async function register(credentials) {
     const { email } = credentials;
 
     // Save email to cookies with 7 days expiry
-    Cookies.set('email', encryptData(email));
+    Cookies.set('email', email, { expires: 7 });
 
     return response?.data; // Return server response after successful registration
   } catch (error) {
@@ -60,6 +60,7 @@ export async function newpassword(credentials) {
 
 // Function to verify OTP (One Time Password)
 export async function verify(credentials) {
+  console.log(credentials)
   try {
     const response = await instance.post(`/auth/verify`, credentials);
     return response?.data?.message; // Return server response after OTP verification

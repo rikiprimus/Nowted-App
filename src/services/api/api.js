@@ -55,7 +55,6 @@ export async function deleted(url, id) {
 // Function to get cookie value by name
 export function getCookie(name) {
   const cookieData = Cookies.get(name);
-
   if (cookieData) {
     return decryptData(cookieData);
   }
