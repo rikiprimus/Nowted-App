@@ -59,7 +59,7 @@ const SideBar = () => {
         <button
           onClick={() => {createEntity("note"); toggleEntity('folder', folderId)}}
           className="w-full flex items-center justify-center gap-4 p-2 bg-light-10 dark:bg-dark-10 dark:text-white rounded-lg hover:bg-light-40 hover:dark:bg-dark-40 active:opacity-50"
-        >
+        > 
           <FaPlus size={20} />
           <p>New Note</p>
         </button>

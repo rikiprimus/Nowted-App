@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ReactLoading from 'react-loading';
 
 const useLoading = () => {
   const [loading, setLoading] = useState(false);
@@ -12,7 +13,15 @@ const useLoading = () => {
     }
   };
 
-  return [loading, withLoading];
+  const LoadingComponent = () => (
+    loading ? (
+      <div className="flex justify-center items-center">
+        <ReactLoading type="bubbles" color="#fff" height={25} width={25} alt="Loading" />
+      </div>
+    ) : null
+  );
+
+  return [loading, withLoading, LoadingComponent];
 };
 
 export default useLoading;

@@ -5,6 +5,7 @@ import useLoading from '../../hooks/useLoading';
 import useMessage from '../../hooks/useMessage';
 import ButtonSubmit from "../ButtonSubmit";
 import Alert from '../Alert';
+import { decryptData } from '../../utils/cookieHelper';
 
 const Verify = ({ onFormChange, mode }) => {
   // Custom hooks for managing loading state and showing messages
@@ -20,10 +21,15 @@ const Verify = ({ onFormChange, mode }) => {
   // Fetch email from cookies on component mount
   useEffect(() => {
     const emailFromCookie = Cookies.get('email');
-    if (emailFromCookie) {
+    let emailData = null;
+    if(emailFromCookie) {
+      emailData = decryptData(emailFromCookie);
+    }
+
+    if (emailData) {
       setCredentials((prevCredentials) => ({
         ...prevCredentials,
-        email: emailFromCookie,
+        email: emailData,
       }));
     }
   }, []);
